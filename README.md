@@ -30,6 +30,40 @@ ARTERY is an enterprise-grade, real-time emergency routing and resource allocati
 
 ---
 
+## 💻 Setup & Run Instructions
+
+### Prerequisites
+* [Node.js](https://nodejs.org/) (v16 or higher recommended) installed.
+
+### 1. Run the Backend API Server
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the server:
+   ```bash
+   node server.js
+   ```
+   *The server will start running on `http://localhost:3000`.*
+
+### 2. Run the Frontend Console
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Simply double-click the `index.html` file to open it directly in your web browser.
+3. *Alternative (Recommended)*: Serve the frontend using a local HTTP server or VS Code's **Live Server** extension:
+   ```bash
+   python -m http.server 8000
+   ```
+   Open `http://localhost:8000` in your web browser.
+
+---
+
 ## 🧪 Testing & Verification
 The project includes a robust test runner (`runTests.js`) that validates all core routing, queueing, and edge cases.
 
