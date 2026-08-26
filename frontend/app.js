@@ -1,6 +1,8 @@
 const API_BASE =
     window.API_BASE ||
-    "http://localhost:3000";
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:3000"
+        : "https://coderush-pari-marathe.onrender.com");
 
 const SVG_NS =
     "http://www.w3.org/2000/svg";
