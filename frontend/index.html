@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARTERY — Rural Dispatch Console</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="brand">
+        <span class="brand-mark">◎</span>
+        <span class="brand-name">ARTERY</span>
+        <span class="brand-sub">rural dispatch console</span>
+    </div>
+    <div class="topbar-right">
+        <span class="conn-dot" id="connDot"></span>
+        <span id="connLabel">connecting…</span>
+    </div>
+</header>
+
+<main class="layout">
+    <!-- LEFT COLUMN (60% width) -->
+    <div class="layout-main">
+        <!-- MAP PANEL -->
+        <section class="panel map-panel">
+            <div class="panel-head">
+                <h2>Road Network</h2>
+                <span class="panel-note">scroll to zoom · drag to pan · click controls</span>
+            </div>
+            
+            <div id="mapViewport">
+                <svg id="mapSvg" class="map-svg" preserveAspectRatio="xMidYMid meet">
+                    <!-- SVG Grid pattern is defined dynamically -->
+                    <defs>
+                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                </svg>
+
+                <div class="map-controls">
+                    <button id="mapZoomIn" title="Zoom In">+</button>
+                    <button id="mapZoomOut" title="Zoom Out">−</button>
+                    <button id="mapReset" title="Reset View">⟲</button>
+                </div>
+
+                <div class="map-legend">
+                    <div class="legend-item"><span class="legend-dot village"></span> Village</div>
+                    <div class="legend-item"><span class="legend-dot hospital"></span> Hospital</div>
+                    <div class="legend-item"><span class="legend-line open"></span> Open road</div>
+                    <div class="legend-item"><span class="legend-line closed"></span> Closed road</div>
+                    <div class="legend-item"><span class="legend-line route"></span> Active route</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUB-GRID (Queue & Fleet) -->
+        <div class="sub-grid">
+            <!-- EMERGENCY QUEUE -->
+            <section class="panel">
+                <div class="panel-head">
+                    <h2>Emergency Queue</h2>
+                    <button id="btnGenEmergency" class="btn btn-accent btn-mini">
+                        ⚡ New Request
+                    </button>
+                </div>
+
+                <form id="emergencyForm" class="emergency-form" style="display:none;">
+                    <div class="form-group">
+                        <label for="fVillage">Village</label>
+                        <select id="fVillage"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fUrgency">Urgency</label>
+                        <select id="fUrgency">
+                            <option value="CRITICAL">Critical</option>
+                            <option value="URGENT">Urgent</option>
+                            <option value="NORMAL" selected>Normal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fSpecialist">Specialist</label>
+                        <select id="fSpecialist">
+                            <option value="general">general</option>
+                            <option value="cardiology">cardiology</option>
+                            <option value="pediatric">pediatric</option>
+                            <option value="orthopedic">orthopedic</option>
+                            <option value="trauma">trauma</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-mini" style="grid-column: span 3;">
+                        Submit Request
+                    </button>
+                </form>
+
+                <div id="queueList" class="queue-list"></div>
+            </section>
+
+            <!-- AMBULANCE FLEET -->
+            <section class="panel">
+                <div class="panel-head">
+                    <h2>Ambulance Fleet</h2>
+                </div>
+                <div id="ambList" class="amb-grid"></div>
+            </section>
+        </div>
+    </div>
+
+    <!-- RIGHT COLUMN (40% width) -->
+    <div class="layout-side">
+        <!-- HOSPITALS -->
+        <section class="panel">
+            <div class="panel-head">
+                <h2>Hospitals Status</h2>
+            </div>
+            <div id="hospitalList" class="hospital-list"></div>
+        </section>
+
+        <!-- SIMULATE DISRUPTION -->
+        <section class="panel">
+            <div class="panel-head">
+                <h2>Simulate Disruption</h2>
+            </div>
+            <div id="simButtons" class="sim-buttons"></div>
+        </section>
+
+        <!-- SYSTEM BENCHMARK -->
+        <section class="panel">
+            <div class="panel-head">
+                <h2>System Benchmark</h2>
+            </div>
+            <div class="benchmark-panel">
+                <p class="panel-note" style="text-align:left; margin-bottom:12px; font-style:italic;">
+                    Test Dijkstra performance on a programmatically generated graph of 50,000 nodes and 200,000 edges.
+                </p>
+                <button id="btnRunBenchmark" class="btn btn-primary" style="width:100%; text-align:center;">
+                    🚀 Run Benchmark
+                </button>
+                <div id="benchmarkResults" style="margin-top:14px; display:none;">
+                    <div class="stat-line">
+                        <span>Nodes</span>
+                        <b id="benchNodes">-</b>
+                    </div>
+                    <div class="stat-line">
+                        <span>Edges</span>
+                        <b id="benchEdges">-</b>
+                    </div>
+                    <div class="stat-line">
+                        <span>Algorithm</span>
+                        <b>Dijkstra</b>
+                    </div>
+                    <div class="stat-line">
+                        <span>Queue</span>
+                        <b>Binary Min Heap</b>
+                    </div>
+                    <div class="stat-line" style="color:var(--green); font-weight:700;">
+                        <span>Execution Time</span>
+                        <b id="benchTime">-</b>
+                    </div>
+                    <div class="stat-line">
+                        <span>Path Found</span>
+                        <b id="benchPath">-</b>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DECISION LOG -->
+        <section class="panel log-panel">
+            <div class="panel-head">
+                <h2>Decision Log</h2>
+                <button id="btnDispatch" class="btn btn-primary">
+                    ▶ Dispatch Next
+                </button>
+            </div>
+            <div id="decisionLog" class="decision-log"></div>
+        </section>
+    </div>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
