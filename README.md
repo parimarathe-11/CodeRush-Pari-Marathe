@@ -14,12 +14,42 @@ ARTERY is an enterprise-grade, real-time emergency routing and resource allocati
 ---
 
 ## 🛠️ Architecture & Tech Stack
-* **Frontend**: Vanilla JavaScript (ES6+), CSS3 (Slate/Indigo custom dashboard theme), HTML5, and custom SVG path rendering.
-* **Backend**: Node.js, Express API server.
-* **Algorithms (Implemented from Scratch)**:
-  * **Binary Min-Heap**: Custom implementation (`priorityQueue.js`) used for Dijkstra node extraction and priority sorting in the emergency queue.
-  * **Dijkstra's Algorithm**: Custom shortest-path calculation (`dijkstra.js`) supporting edge-exclusion for road closures.
-  * **Intelligent Cost Allocation**: Custom multi-factor cost evaluation formula (`Travel Time + Hospital Wait Time`).
+
+### Third-Party Libraries & APIs
+* **Express**: Web application framework for Node.js used to expose REST API endpoints.
+* **Cors**: Cross-origin resource sharing middleware used to connect the frontend client to backend services.
+* *Note: No external third-party maps or search APIs are used, ensuring the application remains completely self-contained.*
+
+### Algorithms & Core Logic (Implemented from Scratch)
+* **Binary Min-Heap**: Custom implementation (`priorityQueue.js`) used for Dijkstra node extraction and priority sorting in the emergency queue.
+  * *Complexity*: `insert` and `extractMin` run in $O(\log V)$ time.
+* **Dijkstra's Algorithm**: Custom shortest-path calculation (`dijkstra.js`) supporting edge-exclusion for road closures.
+  * *Complexity*: Runs in $O((V + E) \log V)$ time.
+* **Intelligent Cost Allocation**: Custom multi-factor cost evaluation formula.
+  * *Formula*: $\text{Total Cost} = \text{Travel Time} + \text{Hospital Wait Time}$.
+
+---
+
+## 🧪 Testing & Verification
+The project includes a robust test runner (`runTests.js`) that validates all core routing, queueing, and edge cases.
+
+To run the automated tests:
+```bash
+cd backend
+node runTests.js
+```
+
+### Verified Test Cases:
+1. **Dijkstra Correctness**: Verifies shortest path distance and node traversal path calculations.
+2. **Priority Queue Ordering**: Ensures min-heap extracts the smallest distance node.
+3. **Critical Beats Normal**: Verifies that emergencies are correctly sorted by urgency.
+4. **Specialist Rejection**: Verifies hospitals lacking the requested specialist are rejected.
+5. **Bed Rejection**: Verifies hospitals with zero general/ICU bed capacity are rejected.
+6. **Medicine Rejection**: Verifies hospitals lacking requested medications are rejected.
+7. **Ambulance Unavailable**: Confirms dispatches queue gracefully if no ambulance is free.
+8. **Road Closure**: Verifies dynamic path exclusion when a road is marked closed.
+9. **Rerouting**: Verifies Dijkstra finds alternative routes when graph edges are disrupted.
+10. **Large Graph Benchmark**: Benchmarks Dijkstra efficiency on a 50,000-node graph.
 
 ---
 
