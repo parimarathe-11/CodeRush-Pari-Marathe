@@ -100,6 +100,7 @@ node runTests.js
 In compliance with the hackathon rules, we declare the following:
 
 1. **AI Assistant Disclosure**:
-   * We utilized the **ChatGPT** AI coding assistant to refine the dashboard layout, design CSS styles, configure routing middleware (`vercel.json`), and build automated verification scripts.
+   * We utilized the **ChatGPT** AI for basic development assistance, including guidance, clarification of technical concepts, troubleshooting, and minor implementation support during the development process.
+   * 
 2. **Core Implementation Integrity**:
    * The **core routing engine, min-heap priority queue structure, Dijkstra's algorithm, cost function, and resource constraint evaluations** were coded and implemented from scratch by the developer. No pre-existing routing or resource allocation packages were used.
